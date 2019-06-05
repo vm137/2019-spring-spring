@@ -2,7 +2,7 @@
 
 # Attention!!! Please, don't modify .travis.yml file, it is necessary for CI process.
 
-You can modify gradle files, if you need.
+## You can modify gradle files, if you need.
 
 1. task: Write your own ApplicationContext implementation (DB, property files, Web, YML, JSON, HTML or smt else)
 
