@@ -1,2 +1,4 @@
+
 script:
-  - chmod +x ./gradlew build
+  - chmod +x ./gradlew
+  - ./gradlew build
