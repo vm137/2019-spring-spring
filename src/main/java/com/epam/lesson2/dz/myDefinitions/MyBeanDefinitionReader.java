@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import java.util.Set;
+
 public class MyBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     /**
@@ -43,28 +45,41 @@ public class MyBeanDefinitionReader extends AbstractBeanDefinitionReader {
      */
     @Override
     public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+        return 0;
+    }
+
+    public int loadBeanDefinitions(MyResource resource) throws BeanDefinitionStoreException {
+
+        Set<MyBeanDefinition> myBeans = resource.getMyBeans();
+
         String beanName;
         GenericBeanDefinition beanDefinition;
 
-        beanDefinition = new GenericBeanDefinition();
-        beanName = "indexService";
-        beanDefinition.setBeanClass(com.epam.lesson2.dz.application.IndexService.class);
-        getRegistry().registerBeanDefinition(beanName, beanDefinition);
+        for (MyBeanDefinition mbd : myBeans) {
+            beanDefinition = new GenericBeanDefinition();
+            beanName = mbd.name;
+            beanDefinition.setBeanClass(mbd.clazz);
 
-        beanDefinition = new GenericBeanDefinition();
-        beanName = "indexApp";
-        beanDefinition.setBeanClass(com.epam.lesson2.dz.application.IndexApp.class);
-
-        ConstructorArgumentValues values2 = new ConstructorArgumentValues();
-        values2.addGenericArgumentValue(new RuntimeBeanReference("indexService"));
-        beanDefinition.setConstructorArgumentValues(values2);
-        getRegistry().registerBeanDefinition(beanName, beanDefinition);
+            switch (mbd.type) {
+                case "basic":
+                    break;
+                case "property":
+                    ConstructorArgumentValues values2 = new ConstructorArgumentValues();
+                    values2.addGenericArgumentValue(new RuntimeBeanReference("indexService"));
+                    beanDefinition.setConstructorArgumentValues(values2);
+                    getRegistry().registerBeanDefinition(beanName, beanDefinition);
+                    break;
+                default:
+                    throw new BeanDefinitionStoreException("unknown bean definition");
+            }
+            getRegistry().registerBeanDefinition(beanName, beanDefinition);
+        }
 
         return getRegistry().getBeanDefinitionNames().length;
     }
 }
 
-// equivalent in application-conf.xml
+//    xml-context version
 //
 //    <bean
 //      id="indexService"
